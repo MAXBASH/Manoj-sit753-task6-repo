@@ -18,6 +18,16 @@ pipeline {
                     echo 'Running unit and integration tests using test automation tools: "JUnit" for unit tests, "Postman" for integration tests'
                 }
             }
+            post {
+                always{
+                    emailext(
+                        subject: "Jenkins Pipeline: Unit and Integration Tests - Build Status - ${currentBuild.currentResult}",
+                        body: "Jenkins build ${currentBuild.currentResult}: ${env.BUILD_URL}\n",
+                        to: "${env.EMAIL_RECIPIENT}",
+                        attachLog: true
+                    )
+                }
+            }
         }
         stage('Code Analysis') {
             steps {
@@ -35,7 +45,7 @@ pipeline {
             post {
                 always{
                     emailext(
-                        subject: "Jenkins Pipeline: Build Status - ${currentBuild.currentResult}",
+                        subject: "Jenkins Pipeline: Security Scan - Build Status - ${currentBuild.currentResult}",
                         body: "Jenkins build ${currentBuild.currentResult}: ${env.BUILD_URL}\n",
                         to: "${env.EMAIL_RECIPIENT}",
                         attachLog: true
